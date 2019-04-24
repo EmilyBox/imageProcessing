@@ -2,6 +2,7 @@ import g4p_controls.*;
 import java.awt.Font;
 import java.util.Map;
 
+
 GLabel title, imgTextLabel;
 GTextField comparisonImgText;
 GTextArea results;
@@ -49,6 +50,7 @@ void draw() {
    if(buttonClicked == true) image(resultImg, 375, 50, 200, 175);
 }
 
+//__________FUNCTIONS FOR SORTING BY PIXEL COLOR____________________________
 int calcHists(PImage img, String colorChoice) {
 
   /*For each pixel, get the red, green, and blue values as ints.
@@ -119,7 +121,9 @@ String sortImages() {
    
    return highestImg;
 }
+//_____________________________________________________________________________________
 
+//________________FUNCTION TO HANDLE BUTTON CLICKS________________________________
 public void handleButtonEvents(GButton button, GEvent event) {
    if(button == constrastBtn && event == GEvent.CLICKED) {
       //insert constrast stuff 
