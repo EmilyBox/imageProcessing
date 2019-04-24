@@ -3,37 +3,63 @@
     //https://en.wikipedia.org/wiki/Contrast_(vision)
 PImage result;
 void setup(){
-  PImage testSearchImg = loadImage("face.jpg");
-  PImage img1 = loadImage("waterfall_overexposed.jpg");
-  PImage img2 = loadImage("man_overexposed.jpg");
-  PImage img3 = loadImage("low_contrast_woman.jpg");
-  PImage [] images = {img1, img2, img3};
+  String [] fileNames = {"waterfall_overexposed.jpg","face.jpg","man_overexposed.jpg","low_contrast_woman.jpg"};
+  PImage [] images = {loadImage(fileNames[0]), loadImage(fileNames[1]), loadImage(fileNames[2]),loadImage(fileNames[3])};
   
-  size(400, 400);
-  surface.setResizable(true);
-  result = highestContrast(testSearchImg, images);
-  surface.setSize(result.width, result.height);
+  String[] sortedContrast = highestContrast(fileNames, images);
+  
+  print("Least to most Contrasted Images = ");
+  for(int i =0; i< sortedContrast.length ; i++){
+    print(sortedContrast[i],"  ");
+  }
   
   
   
 }
 
-void draw() {
-  image(result, 0, 0);
-}
 
-PImage highestContrast(PImage testImage, PImage imglist []){
-  PImage highestContrast = new PImage();
-  float contrastdiff = 1000;
+
+String[] highestContrast(String files[], PImage imglist []){
+  String sorted[] = files;
+  float contrastValues[] = new float[files.length];
   for(int i =0; i< imglist.length ; i++){
-    float contrastdiff2 = abs(getContrast(testImage) - getContrast(imglist[i]));
+    float contrastValue = getContrast(imglist[i]);
+    contrastValues[i] = contrastValue;
+    }
     
-    if(contrastdiff2 < contrastdiff){
-      contrastdiff = contrastdiff2;
-      highestContrast = imglist[i];
+  float sortedValues [] = contrastValues; 
+  
+  /*
+  //testing unsorted list
+  print("UnSorted: ");
+  for(int i =0; i< imglist.length ; i++){
+    print(files[i], "-",contrastValues[i],"  ");
+  }
+  print("\n");
+  */
+  
+  //sort
+  for(int i =0; i< imglist.length ; i++){
+    for (int j = i+1; j < imglist.length; j++) {
+                if ( (sortedValues[i] > sortedValues[j]) && (i != j) ) {
+                    float temp = sortedValues[j];
+                    String tempName = sorted[j];
+                    sortedValues[j] = sortedValues[i];
+                    sorted[j] = sorted[i];
+                    sortedValues[i] = temp;
+                    sorted[i] = tempName;
+      }
     }
   }
-  return highestContrast;
+  /*
+  //testing sorted
+  print("Sorted: ");
+  for(int i =0; i< imglist.length ; i++){
+    print(sorted[i], "-",sortedValues[i],"  ");
+  }
+  */
+   
+  return sorted;
 }
 
 //Michelson Contrast Method 
