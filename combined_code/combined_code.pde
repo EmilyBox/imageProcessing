@@ -11,10 +11,9 @@ boolean buttonClicked = false;
 String imgName;
 
 
-HashMap<String, Integer> imgValues = new HashMap<String, Integer>();
+HashMap<String, Float> imgValues = new HashMap<String, Float>();
 HashMap<Integer, String> imgRanks = new HashMap<Integer, String>();
 
-int redCount, greenCount, blueCount;
 PImage img, resultImg;
 String[] imgFiles ={"ColoredSquares.jpg", "red.jpg", "green.jpg", "blue.jpg", "4.2.03.jpg", "4.2.07.jpg", "eiffel.jpg", "temple.jpg", "waikiki.jpg", "gumballs.jpg", "colorful-1560.jpg", "hot_air.jpg", "Lizard.jpg"};
 String colorChoice;
@@ -51,30 +50,30 @@ void draw() {
 }
 
 //__________FUNCTIONS FOR SORTING BY PIXEL COLOR____________________________
-int calcHists(PImage img, String colorChoice) {
-
+float calcHists(PImage img, String colorChoice, float pixelNum) {
+  int redCount = 0, greenCount = 0, blueCount = 0;
   /*For each pixel, get the red, green, and blue values as ints.
     Increment the counts for the red, green, and blue values.
   */
   for(int y = 0; y < img.height; y++) {
     for(int x = 0; x < img.width; x++) {
       color c = img.get(x, y);
-      int r = int(red(c));
-      int g = int(green(c));
-      int b = int(blue(c));
+      float r = red(c);
+      float g = green(c);
+      float b = blue(c);
 
       redCount += r;
       greenCount += g;
       blueCount += b;
     }
   }
-  /*print("\nRED: ", redCount);
-  print("\nGREEN: ", greenCount);
-  print("\nBLUE: ", blueCount);*/
+  float redP = redCount / pixelNum;
+  float greenP = greenCount / pixelNum;
+  float blueP = blueCount / pixelNum;
   
-  if(colorChoice == "red") return redCount;
-  else if(colorChoice == "green") return greenCount;
-  else return blueCount;
+  if(colorChoice == "red") return redP;
+  else if(colorChoice == "green") return greenP;
+  else return blueP;
 }
 
 void printHists() {
@@ -89,16 +88,17 @@ void printHists() {
 void getPixelValue() {
   for(int i = 0; i < imgFiles.length; i++) {
      img = loadImage(imgFiles[i]);
-     int pixelValue = calcHists(img, colorChoice);
+     float numPixels = img.width * img.height;
+     float pixelValue = calcHists(img, colorChoice, numPixels);
      imgValues.put(imgFiles[i], pixelValue);
    }
 }
 
 String sortImages() {
-  int[] pixelValues = {};
-  int[] sortedValues = {};
+  float[] pixelValues = {};
+  float[] sortedValues = {};
   for(Map.Entry me : imgValues.entrySet()) {
-    int value = (Integer) me.getValue();
+    float value = (Float) me.getValue();
     pixelValues = append(pixelValues, value);
   }
   
