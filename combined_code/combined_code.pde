@@ -127,6 +127,17 @@ String sortImages() {
 public void handleButtonEvents(GButton button, GEvent event) {
    if(button == constrastBtn && event == GEvent.CLICKED) {
       //insert constrast stuff 
+      results.setText("");
+      buttonClicked = true;
+      PImage [] contrastfiles = new PImage[imgFiles.length];
+      for(int i =0; i<imgFiles.length; i++){
+        contrastfiles[i] = loadImage(imgFiles[i]);     
+      }
+      
+      String[] contrastList = highestContrast(imgFiles, contrastfiles);
+      
+      imgName = contrastList[imgFiles.length - 1];
+      resultImg = loadImage(imgName);
    }
    else if(button == redBtn && event == GEvent.CLICKED) {
      results.setText("");
@@ -164,4 +175,64 @@ public void handleButtonEvents(GButton button, GEvent event) {
    else if(button == extensionBtn && event == GEvent.CLICKED) {
      //insert extension stuff 
    }
+}
+
+//Contrast functtions
+//====================================
+String[] highestContrast(String files[], PImage imglist []){
+  String sorted[] = files;
+  float contrastValues[] = new float[files.length];
+  for(int i =0; i< imglist.length ; i++){
+    float contrastValue = getContrast(imglist[i]);
+    contrastValues[i] = contrastValue;
+    }
+    
+  float sortedValues [] = contrastValues; 
+  
+  /*
+  //testing unsorted list
+  print("UnSorted: ");
+  for(int i =0; i< imglist.length ; i++){
+    print(files[i], "-",contrastValues[i],"  ");
+  }
+  print("\n");
+  */
+  
+  //sort
+  for(int i =0; i< imglist.length ; i++){
+    for (int j = i+1; j < imglist.length; j++) {
+                if ( (sortedValues[i] > sortedValues[j]) && (i != j) ) {
+                    float temp = sortedValues[j];
+                    String tempName = sorted[j];
+                    sortedValues[j] = sortedValues[i];
+                    sorted[j] = sorted[i];
+                    sortedValues[i] = temp;
+                    sorted[i] = tempName;
+      }
+    }
+  }
+  /*
+  //testing sorted
+  print("Sorted: ");
+  for(int i =0; i< imglist.length ; i++){
+    print(sorted[i], "-",sortedValues[i],"  ");
+  }
+  */
+   
+  return sorted;
+}
+
+//Michelson Contrast Method 
+float getContrast(PImage img) {
+  float maxLum = 0;
+  float minLum = 10000;
+  for (int i=0; i<img.pixels.length; i++) {
+    float r = img.pixels[i] >> 16 & 0xFF;
+    float g = img.pixels[i] >> 8 & 0xFF;
+    float b = img.pixels[i] & 0xFF;
+    float brightness = (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
+    if (brightness > maxLum) maxLum = brightness;
+    if (brightness < minLum) minLum = brightness;
+  }
+  return (maxLum - minLum)/(maxLum + minLum);
 }
