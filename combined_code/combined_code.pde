@@ -45,7 +45,7 @@ void setup() {
 }
 
 void draw() {
-   background(0); 
+   background(255); 
    if(buttonClicked == true) image(resultImg, 375, 50, 200, 175);
 }
 
