@@ -189,15 +189,6 @@ String[] highestContrast(String files[], PImage imglist []){
     
   float sortedValues [] = contrastValues; 
   
-  /*
-  //testing unsorted list
-  print("UnSorted: ");
-  for(int i =0; i< imglist.length ; i++){
-    print(files[i], "-",contrastValues[i],"  ");
-  }
-  print("\n");
-  */
-  
   //sort
   for(int i =0; i< imglist.length ; i++){
     for (int j = i+1; j < imglist.length; j++) {
@@ -211,13 +202,12 @@ String[] highestContrast(String files[], PImage imglist []){
       }
     }
   }
-  /*
-  //testing sorted
-  print("Sorted: ");
-  for(int i =0; i< imglist.length ; i++){
-    print(sorted[i], "-",sortedValues[i],"  ");
-  }
-  */
+  
+  //print list of names (1 least amount of contrast)
+  for(int i = 0; i< sorted.length; i++) {
+      results.appendText((i + 1) + " - " + sorted[i]);
+   }
+   
    
   return sorted;
 }
