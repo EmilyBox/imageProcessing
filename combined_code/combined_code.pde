@@ -6,7 +6,7 @@ import java.util.Map;
 GLabel title, imgTextLabel;
 GTextField comparisonImgText;
 GTextArea results;
-GButton constrastBtn, redBtn, greenBtn, blueBtn, grayscaleBtn, bwBtn, extensionBtn;
+GButton constrastBtn, redBtn, greenBtn, blueBtn, grayscaleBtn, bwBtn, jpgBtn, bmpBtn, pngBtn, gifBtn;
 boolean buttonClicked = false;
 String imgName;
 
@@ -15,7 +15,9 @@ HashMap<String, Float> imgValues = new HashMap<String, Float>();
 HashMap<Integer, String> imgRanks = new HashMap<Integer, String>();
 
 PImage img, resultImg;
-String[] imgFiles ={"ColoredSquares.jpg", "red.jpg", "green.jpg", "blue.jpg", "4.2.03.jpg", "4.2.07.jpg", "eiffel.jpg", "temple.jpg", "waikiki.jpg", "gumballs.jpg", "colorful-1560.jpg", "hot_air.jpg", "Lizard.jpg"};
+String[] imgFiles ={"ColoredSquares.jpg", "gs2.jpg", "bw8.jpg", "color.gif", "sunset.bmp", "space.png", "red.jpg", "green.jpg", "blue.jpg", 
+                    "gray3.jpg", "gray1.jpg", "earth.bmp", "4.2.03.jpg", "mario.gif", "4.2.07.jpg", "eiffel.jpg", "temple.jpg", 
+                    "waikiki.jpg", "gumballs.jpg", "colorful-1560.jpg", "hot_air.jpg", "Lizard.jpg"};
 String colorChoice;
 
 void setup() {
@@ -37,7 +39,10 @@ void setup() {
   blueBtn = new GButton(this, 130, 395, 100, 30, "Blue");
   grayscaleBtn = new GButton(this, 130, 440, 100, 30, "Grayscale");
   bwBtn = new GButton(this, 130, 485, 100, 30, "Black and White");
-  extensionBtn = new GButton(this, 130, 530, 100, 30, "Extensions");
+  jpgBtn = new GButton(this, 130, 530, 100, 30, "JPG");
+  pngBtn = new GButton(this, 240, 530, 100, 30, "PNG");
+  bmpBtn = new GButton(this, 20, 530, 100, 30, "BMP");
+  gifBtn = new GButton(this, 130, 570, 100, 30, "GIF");
   
   //Results
   results = new GTextArea(this, 375, 250, 200, 325, 1);
@@ -121,6 +126,122 @@ String sortImages() {
    
    return highestImg;
 }
+
+//_____________________________________________________________________________________
+
+//________________FUNCTIONS TO HANDLE EXTENSIONS AND GRAYSCALE/BLACK AND WHITE________________________________
+
+String[] isPng(String[] options) {
+  String[] files = new String[0]; 
+  for(int i = 0; i < options.length; i++) {
+    if (options[i].endsWith("png")) {
+      files = append(files, options[i]);
+    }
+  }
+  for ( int j = 0; j < files.length; j++) {
+    results.appendText(files[j]);
+  }
+  return files;
+}
+
+String[] isJpg(String[] options) {
+  String[] files = new String[0]; 
+  for(int i = 0; i < options.length; i++) {
+    if (options[i].endsWith("jpg")) {
+      files = append(files, options[i]);
+    }
+  }
+  for ( int j = 0; j < files.length; j++) {
+    results.appendText(files[j]);
+  }
+  return files;
+}
+
+String[] isBmp(String[] options) {
+  String[] files = new String[0]; 
+  for(int i = 0; i < options.length; i++) {
+    if (options[i].endsWith("bmp")) {
+      files = append(files, options[i]);
+    }
+  }
+  for ( int j = 0; j < files.length; j++) {
+    results.appendText(files[j]);
+  }
+  return files;
+}
+
+String[] isGif(String[] options) {
+  String[] files = new String[0]; 
+  for(int i = 0; i < options.length; i++) {
+    if (options[i].endsWith("gif")) {
+      files = append(files, options[i]);
+    }
+  }
+  for ( int j = 0; j < files.length; j++) {
+    results.appendText(files[j]);
+  }
+  return files;
+}
+
+
+String[] isGrayScale(String[] options, PImage img) {
+  Boolean isGray = true;
+  String[] files = new String[0];   
+ 
+  float r = 0, g = 0, b = 0;
+  for (int i = 0; i < options.length; i++) {
+    img = loadImage(options[i]);
+    for (int y = 0; y < img.height; y++) {
+      for (int x = 0; x < img.width; x++) {
+        color c = img.get(x, y);
+        r = red(c);
+        g = green(c);
+        b = blue(c);  
+        if (r != g || r != b || g != b) {
+          isGray = false;
+        } 
+      }
+    }
+      if (isGray) {
+        files = append(files, options[i]);
+      }
+    isGray = true;
+  }
+    for ( int j = 0; j < files.length; j++) {
+        results.appendText(files[j]);
+    }
+  return files;
+}
+
+String[] isBlackAndWhite(String[] options, PImage img) {
+  Boolean isBandW = true;
+  String[] files = new String[0];   
+  
+  float r = 0, g = 0, b = 0;
+  for (int i = 0; i < options.length; i++) {
+    img = loadImage(options[i]);
+    for (int y = 0; y < img.height; y++) {
+      for (int x = 0; x < img.width; x++) {
+        color c = img.get(x, y);
+        r = red(c);
+        g = green(c);
+        b = blue(c);
+        if (r != 255.0 && r != 0.0 || g != 255.0 && g != 0.0 || b != 255.0 && b != 0.0) {     
+          isBandW = false;
+        } 
+      }
+    }
+      if (isBandW) {
+        files = append(files, options[i]);
+      }
+    isBandW = true;
+  }
+    for ( int j = 0; j < files.length; j++) {
+        results.appendText(files[j]);
+    }
+  return files;
+}
+
 //_____________________________________________________________________________________
 
 //________________FUNCTION TO HANDLE BUTTON CLICKS________________________________
@@ -167,13 +288,52 @@ public void handleButtonEvents(GButton button, GEvent event) {
      resultImg = loadImage(imgName);
    }
    else if(button == grayscaleBtn && event == GEvent.CLICKED) {
-     //insert grayscale stuff 
+          //insert grayscale stuff 
+     results.setText("");
+     buttonClicked = true;
+     String[] grays = isGrayScale(imgFiles, img);
+     imgName = grays[0];
+     resultImg = loadImage(imgName);
    }
    else if(button == bwBtn && event == GEvent.CLICKED) {
-     //insert black and white stuff 
+          //insert black and white stuff 
+     results.setText("");
+     buttonClicked = true;
+     String[] bws = isBlackAndWhite(imgFiles, img);
+     imgName = bws[0];
+     resultImg = loadImage(imgName);
    }
-   else if(button == extensionBtn && event == GEvent.CLICKED) {
+   else if(button == jpgBtn && event == GEvent.CLICKED) {
      //insert extension stuff 
+     results.setText("");
+     buttonClicked = true;
+     String[] jpgs = isJpg(imgFiles);
+     imgName = jpgs[0];
+     resultImg = loadImage(imgName);
+   }
+   else if(button == bmpBtn && event == GEvent.CLICKED) {
+     //insert extension stuff 
+     results.setText("");
+     buttonClicked = true;
+     String[] bmps = isBmp(imgFiles);
+     imgName = bmps[0];
+     resultImg = loadImage(imgName);
+   }
+   else if(button == pngBtn && event == GEvent.CLICKED) {
+     //insert extension stuff 
+     results.setText("");
+     buttonClicked = true;
+     String[] pngs = isPng(imgFiles);
+     imgName = pngs[0];
+     resultImg = loadImage(imgName);
+   }
+   else if(button == gifBtn && event == GEvent.CLICKED) {
+     //insert extension stuff 
+     results.setText("");
+     buttonClicked = true;
+     String[] gifs = isGif(imgFiles);
+     imgName = gifs[0];
+     resultImg = loadImage(imgName);
    }
 }
 
